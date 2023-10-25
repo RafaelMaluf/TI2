@@ -1,17 +1,17 @@
 package dao;
 
-import model.Texto;
-import java.time.LocalDateTime;
+import model.Usuario;
+
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextoDAO extends DAO {	
-	public TextoDAO() {
+public class UsuarioDAO extends DAO {	
+	public UsuarioDAO() {
 		super();
 		conectar();
 	}
@@ -21,18 +21,19 @@ public class TextoDAO extends DAO {
 		close();
 	}
 	
-	public boolean insert(Texto texto) {
+	public boolean insert(Usuario usuario) {
 	    boolean status = false;
 	    try {
-	        String sql = "INSERT INTO texto (id, conteudo, titulo, dataPublicacao, favorito) "
+	        String sql = "INSERT INTO usuario (id, nome, idade, email, Senha) "
 	                   + "VALUES (?, ?, ?, ?, ?)";
 	        PreparedStatement st = conexao.prepareStatement(sql);
-	        texto.setId(getMaxId() + 1);
-	        st.setInt(1, texto.getId());  // Use setInt para o campo ID
-	        st.setString(2, texto.getConteudo());
-	        st.setString(3, texto.getTitulo());
-	        st.setDate(4, texto.getDataPublicacao());
-			st.setBoolean(5, texto.getFavorito());
+	        usuario.setId(getMaxId() + 1);
+				
+	        st.setInt(1, usuario.getId());  // Use setInt para o campo ID
+	        st.setString(2, usuario.getNome());
+			st.setDate(3, usuario.getIdade());
+	        st.setString(3, usuario.getEmail());
+	        st.setString(4, usuario.getSenha());
 	        st.executeUpdate();
 	        st.close();
 	        status = true;
@@ -45,7 +46,7 @@ public class TextoDAO extends DAO {
 	public int getMaxId() {
         int maxId = -1; // Valor padrão caso não haja registros na tabela
 
-        String query = "SELECT MAX(id) FROM texto";
+        String query = "SELECT MAX(id) FROM usuario";
 
         try (PreparedStatement statement = conexao.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -63,77 +64,81 @@ public class TextoDAO extends DAO {
     }
 
 	
-	public Texto get(int id) {
-		Texto texto = null;
+	public Usuario get(int id) {
+		Usuario usuario = null;
 		
 		try {
 			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM texto WHERE id="+id;
+			String sql = "SELECT * FROM usuario WHERE id="+id;
 			ResultSet rs = st.executeQuery(sql);	
 	        if(rs.next()){            
-	        	 texto = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"));
+	        	 usuario = new Usuario(rs.getInt("id"), rs.getString("nome"), 
+				 					   rs.getDate("idade"), rs.getString("email"),
+									   rs.getString("senha"));
+	                				   
 	        }
 	        st.close();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-		return texto;
+		return usuario;
 	}
 	
 	
-	public List<Texto> get() {
+	public List<Usuario> get() {
 		return get("");
 	}
 
 	
-	public List<Texto> getOrderByID() {
+	public List<Usuario> getOrderByID() {
 		return get("id");		
 	}
 	
 	
-	public List<Texto> getOrderByDescricao() {
+	public List<Usuario> getOrderByDescricao() {
 		return get("descricao");		
 	}
 	
 	
-	public List<Texto> getOrderByPreco() {
+	public List<Usuario> getOrderByPreco() {
 		return get("preco");		
 	}
 	
 	
-	private List<Texto> get(String orderBy) {
-		List<Texto> textos= new ArrayList<Texto>();
+	private List<Usuario> get(String orderBy) {
+		List<Usuario> usuarios = new ArrayList<Usuario>();
 		
 		try {
 			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM texto" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
+			String sql = "SELECT * FROM usuario" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
 			ResultSet rs = st.executeQuery(sql);	           
 	        while(rs.next()) {	            	
-	        	Texto p = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"));
-	            textos.add(p);
+	        	Usuario p = new Usuario(rs.getInt("id"), rs.getString("nome"), 
+	        							rs.getDate("idade"), rs.getString("email"),
+	        							rs.getString("senha"));
+	            usuarios.add(p);
 	        }
 	        st.close();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-		return textos;
+		return usuarios;
 	}
 	
 	
-	public boolean update(Texto texto) {
+	public boolean update(Usuario usuario) {
 		boolean status = false;
 		try {  
-			String sql = "UPDATE texto SET conteudo = '" + texto.getConteudo() + "', "
-					   + "titulo = " + texto.getTitulo() + ", " 
-					   + "dataPublicacao = ?"
-					   + "WHERE id = " + texto.getId();
-					   
+			String sql = "UPDATE usuario SET nome = '" + usuario.getNome() + "', "
+					   + "idade = " + usuario.getIdade() + ", " 
+					   + "email = " + usuario.getEmail() + ","
+					   + "senha = " + usuario.getSenha() + ","
+					   + " WHERE id = " + usuario.getId();
+
 			PreparedStatement st = conexao.prepareStatement(sql);
-		    st.setDate(1, Date.valueOf(LocalDateTime.now().toLocalDate()));
 			st.executeUpdate();
 			st.close();
 			status = true;
-			
 		} catch (SQLException u) {  
 			throw new RuntimeException(u);
 		}
@@ -145,7 +150,7 @@ public class TextoDAO extends DAO {
 		boolean status = false;
 		try {  
 			Statement st = conexao.createStatement();
-			st.executeUpdate("DELETE FROM texto WHERE id = " + id);
+			st.executeUpdate("DELETE FROM usuario WHERE id = " + id);
 			st.close();
 			status = true;
 		} catch (SQLException u) {  

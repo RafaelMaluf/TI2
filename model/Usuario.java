@@ -1,26 +1,29 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 
-public class Login implements Serializable {
+
+
+public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nome;
-	private int idade;
+	private Date idade;
 	private String email;
 	private String senha;
 	
-	public Login() {
+	public Usuario() {
 		id = -1;
 		nome = "nome";
-		idade = -1;
+		idade = Date.valueOf("9999-99-99");
 		email = "email";
 		senha = "senha";
 		
 	}
 	
-	public Login(int id, String nome, int idade, String email, String senha) {
+	public Usuario(int id, String nome, Date idade, String email, String senha) {
 		setId(id);
 		setNome(nome);
 		setIdade(idade);
@@ -38,7 +41,7 @@ public class Login implements Serializable {
 		return nome;
 	}
 	
-	public int getIdade() {
+	public Date getIdade() {
 		return idade;
 	}
 	
@@ -60,7 +63,7 @@ public class Login implements Serializable {
 		this.nome = nome;
 	}
 		
-	public void setIdade(int idade) {
+	public void setIdade(Date idade) {
 		this.idade = idade;
 	}
 		

@@ -1,6 +1,7 @@
 package model;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.sql.Date;
 
 
 public class Texto implements Serializable {
@@ -8,21 +9,23 @@ public class Texto implements Serializable {
 	private int id;
 	private String conteudo;
 	private String titulo;
-	private LocalDateTime dataPublicacao;
+	private boolean favorito;
+	private Date dataPublicacao;
 	
 	public Texto() {
 		id = -1;
 		conteudo = "conteudo";
 		titulo = "titulo";
-		dataPublicacao = LocalDateTime.now();
 		
 	}
 	
-	public Texto(int id, String conteudo, String titulo, LocalDateTime dataPublicacao) {
+	public Texto(int id, String conteudo, String titulo) {
 		setId(id);
 		setConteudo(conteudo);
 		setTitulo(titulo);
-		setDataPublicacao(dataPublicacao);
+		Date data = Date.valueOf(LocalDateTime.now().toLocalDate());
+		setDataPublicacao(data);
+		setFavorito(false);
 	}
 	
 	 // getters
@@ -39,10 +42,13 @@ public class Texto implements Serializable {
 		return titulo;
 	}
 	
-	public LocalDateTime getDataPublicacao() {
+	public Date getDataPublicacao() {
 		return dataPublicacao;
 	}
 	
+	public boolean getFavorito() {
+		return favorito;
+	}
 	//setters
 	
 	public void setId(int id) {
@@ -57,8 +63,12 @@ public class Texto implements Serializable {
 		this.titulo = titulo;
 	}
 		
-	public void setDataPublicacao(LocalDateTime dataPublicacao) {
+	public void setDataPublicacao(Date dataPublicacao) {
 		this.dataPublicacao = dataPublicacao;
+	}
+
+	public void setFavorito(boolean favorito) {
+		this.favorito = favorito;
 	}
 	
 	@Override

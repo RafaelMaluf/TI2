@@ -1,14 +1,14 @@
 package service;
 
-import dao.LoginDAO;
-import model.Login;
+import dao.UsuarioDAO;
+import model.Usuario;
 
 import java.io.IOException;
 
-public class LoginService {
+public class UsuarioService {
 	
 	
-		LoginDAO dao = new LoginDAO(); 
+		UsuarioDAO dao = new UsuarioDAO(); 
 		dao.conectar();
 		
 		public Object add(Request request, Response response){
@@ -17,11 +17,11 @@ public class LoginService {
 			String email = request.queryParams("email");
 			String senha = request.queryParams("senha");
 			
-			int id = LoginDAO.getMaxId() + 1;
+			int id = UsuarioDAO.getMaxId() + 1;
 
-			Login login = new login(id,nome,idade,email,senha);
+			Usuario usuario = new Usuario(id,nome,idade,email,senha);
 
-			if(LoginDAO.add(login) == true) {
+			if(UsuarioDAO.add(login) == true) {
 			System.out.println("Inserção com sucesso -> " + login.toString());
 			}
 
