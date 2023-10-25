@@ -95,14 +95,10 @@ public class UsuarioDAO extends DAO {
 	}
 	
 	
-	public List<Usuario> getOrderByDescricao() {
-		return get("descricao");		
+	public List<Usuario> getOrderByNome() {
+		return get("nome");		
 	}
 	
-	
-	public List<Usuario> getOrderByPreco() {
-		return get("preco");		
-	}
 	
 	
 	private List<Usuario> get(String orderBy) {

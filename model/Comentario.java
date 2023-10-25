@@ -5,27 +5,27 @@ import java.io.Serializable;
 
 public class Comentario implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private int id_Comentario;
+	private int id;
 	private int id_Texto;
 	private String conteudo;
 	
 	public Comentario() {
-        id_Comentario = 0;
+        id = 0;
 		id_Texto = -1;
 		conteudo = "conteudo";
 		
 	}
 	
-	public Comentario(int id_Texto, String conteudo) {
-		setId_Comentario(id_Comentario);
+	public Comentario(int id, int id_Texto, String conteudo) {
+		setId(id);
         setId_Texto(id_Texto);
 		setConteudo(conteudo);
 		
 	}
 	
 	 // getters
-	public int getId_Comentario() {
-		return id_Comentario;
+	public int getId() {
+		return id;
 	}
 
 	public int getId_Texto() {
@@ -39,8 +39,8 @@ public class Comentario implements Serializable {
 	
 	//setters
 	
-	public void setId_Comentario(int id) {
-		this.id_Comentario = id;
+	public void setId(int id) {
+		this.id = id;
 	}
 	
     public void setId_Texto(int id) {
@@ -54,7 +54,7 @@ public class Comentario implements Serializable {
 	
 	@Override
 	public String toString() {
-		return " Id_Comentario: " + id_Comentario + " Id_Texto: " + id_Texto + " conteudo: " + conteudo;
+		return " Id: " + id + " Id_Texto: " + id_Texto + " conteudo: " + conteudo;
 	}
 	
 	
