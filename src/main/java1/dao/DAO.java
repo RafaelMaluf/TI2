@@ -10,7 +10,7 @@ public class DAO {
 	}
 	
 	public boolean conectar() {
-		String driverName = "org.postgresql.Driver";
+		String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 		String serverName = "skipp.database.windows.net";
 		String mydatabase = "teste";
 		int porta = 5432;
