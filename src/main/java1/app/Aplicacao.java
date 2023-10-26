@@ -1,20 +1,26 @@
 package app;
 
-import dao.UsuarioDAO;
+import java.text.ParseException;
 
-import service.TextoService;
+
+import dao.UsuarioDAO;
 import service.UsuarioService;
+
+
 
 public class Aplicacao {
 		
 		private static UsuarioService usuarioService = new UsuarioService();
 		
-		public static void main(String[] args) {
+		public static void main(String[] args) throws ParseException {
+			port(5432);
 			
-			add("/usuario", (request, response) -> usuarioService.add(request, response));
-			get("/usuario", (request, response) -> usuarioService.get(request, response));
-			add("/texto", (request, response) -> textoService.add(request, response));
-			get("/texto", (request, response) -> textoService.get(request, response));
+			staticFiles.location("/public");
+			
+			
+			
+			dao.close();
+			
 		}
 		
 }
