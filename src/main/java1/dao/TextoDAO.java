@@ -1,14 +1,13 @@
 package dao;
 
 import model.Texto;
+
 import java.time.LocalDateTime;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TextoDAO extends DAO {	
 	public TextoDAO() {
@@ -19,26 +18,6 @@ public class TextoDAO extends DAO {
 	
 	public void finalize() {
 		close();
-	}
-	
-	public boolean insert(Texto texto) {
-	    boolean status = false;
-	    try {
-	        String sql = "INSERT INTO texto (id, conteudo, titulo, dataPublicacao) "
-	                   + "VALUES (?, ?, ?, ?)";
-	        PreparedStatement st = conexao.prepareStatement(sql);
-	        texto.setId(getMaxId() + 1);
-	        st.setInt(1, texto.getId());  // Use setInt para o campo ID
-	        st.setString(2, texto.getConteudo());
-	        st.setString(3, texto.getTitulo());
-	        st.setDate(4, texto.getDataPublicacao());
-	        st.executeUpdate();
-	        st.close();
-	        status = true;
-	    } catch (SQLException u) {  
-	        throw new RuntimeException(u);
-	    }
-	    return status;
 	}
 	
 	public int getMaxId() {
@@ -61,6 +40,30 @@ public class TextoDAO extends DAO {
         return maxId;
     }
 
+	public Texto[] getTextos() {
+		Texto[] textos = null;
+		
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			String sql = "SELECT * FROM texto";
+			ResultSet rs = st.executeQuery(sql);	
+	        if(rs.next()){  
+	        	rs.next();
+	        	textos = new Texto[rs.getRow()];
+	        	rs.beforeFirst();
+	        	
+	        	for(int i = 0; rs.next(); i++) {
+	        		textos[i] = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"),
+							   rs.getBoolean("favorito"));
+	        	}
+	                				   
+	        }
+	        st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return textos;
+	}
 	
 	public Texto get(int id) {
 		Texto texto = null;
@@ -79,42 +82,25 @@ public class TextoDAO extends DAO {
 		return texto;
 	}
 	
-	
-	public List<Texto> get() {
-		return get("");
-	}
-
-	
-	public List<Texto> getOrderByID() {
-		return get("id");		
-	}
-	
-	
-	public List<Texto> getOrderByTitulo() {
-		return get("titulo");		
-	}
-	
-	
-	
-	private List<Texto> get(String orderBy) {
-		List<Texto> textos= new ArrayList<Texto>();
-		
-		try {
-			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM texto" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
-			ResultSet rs = st.executeQuery(sql);	           
-	        while(rs.next()) {	            	
-	        	Texto p = new Texto(rs.getInt("id"), rs.getString("conteudo"),
-	        						rs.getString("titulo"), rs.getBoolean("favorito"));
-	            textos.add(p);
-	        }
+	public boolean insert(Texto texto) {
+	    boolean status = false;
+	    try {
+	        String sql = "INSERT INTO texto (id, conteudo, titulo, dataPublicacao) "
+	                   + "VALUES (?, ?, ?, ?)";
+	        PreparedStatement st = conexao.prepareStatement(sql);
+	        texto.setId(getMaxId() + 1);
+	        st.setInt(1, texto.getId());  // Use setInt para o campo ID
+	        st.setString(2, texto.getConteudo());
+	        st.setString(3, texto.getTitulo());
+	        st.setDate(4, texto.getDataPublicacao());
+	        st.executeUpdate();
 	        st.close();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		return textos;
+	        status = true;
+	    } catch (SQLException u) {  
+	        throw new RuntimeException(u);
+	    }
+	    return status;
 	}
-	
 	
 	public boolean update(Texto texto) {
 		boolean status = false;

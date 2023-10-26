@@ -43,7 +43,7 @@ public class UsuarioService {
             );
         });
 
-        Spark.post("/usuario", (request, response) -> {
+        Spark.post("/usuario/insert", (request, response) -> {
             String name = request.queryParams("name");
             String email = request.queryParams("email");
             String senha = request.queryParams("senha");
@@ -83,4 +83,8 @@ public class UsuarioService {
     public static void main(String[] args) {
         new UsuarioService();
     }
+
+
+
+
 }

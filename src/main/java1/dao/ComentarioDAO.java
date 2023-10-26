@@ -6,8 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ComentarioDAO extends DAO {	
 	public ComentarioDAO() {
@@ -20,26 +18,6 @@ public class ComentarioDAO extends DAO {
 		close();
 	}
 	
-	public boolean insert(Comentario comentario) {
-	    boolean status = false;
-	    try {
-	        String sql = "INSERT INTO comentario (id, nome, idade, email, Senha) "
-	                   + "VALUES (?, ?, ?, ?, ?)";
-	        PreparedStatement st = conexao.prepareStatement(sql);
-	        comentario.setId(getMaxId() + 1);
-				
-	        st.setInt(1, comentario.getId());  // Use setInt para o campo ID
-	        st.setInt(2, comentario.getId_Texto());
-	        st.setString(3, comentario.getConteudo());
-	        
-	        st.executeUpdate();
-	        st.close();
-	        status = true;
-	    } catch (SQLException u) {  
-	        throw new RuntimeException(u);
-	    }
-	    return status;
-	}
 	
 	public int getMaxId() {
         int maxId = -1; // Valor padrão caso não haja registros na tabela
@@ -80,34 +58,22 @@ public class ComentarioDAO extends DAO {
 		return comentario;
 	}
 	
-	
-	public List<Comentario> get() {
-		return get("");
-	}
-
-	
-	public List<Comentario> getOrderByID() {
-		return get("id");		
-	}
-	
-	
-	public List<Comentario> getOrderByNome() {
-		return get("nome");		
-	}
-	
-	
-	
-	private List<Comentario> get(String orderBy) {
-		List<Comentario> comentarios = new ArrayList<Comentario>();
+	public Comentario[] getComentarios() {
+		Comentario[] comentarios = null;
 		
 		try {
 			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM comentario" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
-			ResultSet rs = st.executeQuery(sql);	           
-	        while(rs.next()) {	            	
-	        	Comentario p = new Comentario(rs.getInt("id"), rs.getInt("id_texto"), rs.getString("conteudo"));
-	        							
-	            comentarios.add(p);
+			String sql = "SELECT * FROM comentario";
+			ResultSet rs = st.executeQuery(sql);	
+	        if(rs.next()){  
+	        	rs.next();
+	        	comentarios = new Comentario[rs.getRow()];
+	        	rs.beforeFirst();
+	        	
+	        	for(int i = 0; rs.next(); i++) {
+	        		comentarios[i] = new Comentario(rs.getInt("id"), rs.getInt("id_Texto"), rs.getString("conteudo"));
+	        	}
+	                				   
 	        }
 	        st.close();
 		} catch (Exception e) {
@@ -116,6 +82,26 @@ public class ComentarioDAO extends DAO {
 		return comentarios;
 	}
 	
+	public boolean insert(Comentario comentario) {
+	    boolean status = false;
+	    try {
+	        String sql = "INSERT INTO comentario (id, nome, idade, email, Senha) "
+	                   + "VALUES (?, ?, ?, ?, ?)";
+	        PreparedStatement st = conexao.prepareStatement(sql);
+	        comentario.setId(getMaxId() + 1);
+				
+	        st.setInt(1, comentario.getId());  // Use setInt para o campo ID
+	        st.setInt(2, comentario.getId_Texto());
+	        st.setString(3, comentario.getConteudo());
+	        
+	        st.executeUpdate();
+	        st.close();
+	        status = true;
+	    } catch (SQLException u) {  
+	        throw new RuntimeException(u);
+	    }
+	    return status;
+	}
 	
 	public boolean update(Comentario comentario) {
 		boolean status = false;
