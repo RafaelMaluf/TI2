@@ -10,13 +10,13 @@ public class DAO {
 	}
 	
 	public boolean conectar() {
-		String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-		String serverName = "skipp.database.windows.net";
-		String mydatabase = "teste";
+		String driverName = "org.postgresql.Driver";
+		String serverName = "skippuc.postgres.database.azure.com";
+		String mydatabase = "postgres";
 		int porta = 5432;
-		String url = "urlsite" + serverName + ":" + porta + "/" + mydatabase;
-		String username = "skippadmin";
-		String password = "Skipp@admin";
+		String url = "jdbc:postgresql://" + serverName + ":" + porta + "/" + mydatabase;
+		String username = "skippgolpes@skippuc";
+		String password = "Senha123";
 		boolean status = false;
 
 		try {

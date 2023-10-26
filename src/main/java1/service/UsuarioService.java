@@ -1,36 +1,32 @@
 package service;
 
-
 import dao.UsuarioDAO;
 
 import model.Usuario;
-
 import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import spark.Spark;
-import spark.template.velocity.VelocityTemplateEngine;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import spark.template.velocity.VelocityTemplateEngine;
 
 public class UsuarioService {
 
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public UsuarioService() {
-        setupRoutes();
+    setupRoutes();
     }
-
+    
     private void setupRoutes() {
+    	
+    	Spark.port(5432);
         Spark.staticFileLocation("/public");
-        Spark.port(8080);
+        
 
         Spark.get("/", (request, response) -> {
             Map<String, Object> model = new HashMap<>();
-            List<Usuario> allusuario = UsuarioDAO.getAll();
+            Usuario[] allUsuario = usuarioDAO.getUsuarios();
             model.put("usuarioList", allUsuario);
             return new VelocityTemplateEngine().render(
                     new ModelAndView(model, "templates/index.vm")
@@ -40,18 +36,20 @@ public class UsuarioService {
         Spark.get("/usuario/:id", (request, response) -> {
             Map<String, Object> model = new HashMap<>();
             int id = Integer.parseInt(request.params(":id"));
-            Usuario Usuario = UsuarioDAO.get(id);
-            model.put("Usuario", Usuario);
+            Usuario usuario = usuarioDAO.get(id);
+            model.put("usuario", usuario);
             return new VelocityTemplateEngine().render(
                     new ModelAndView(model, "templates/detail.vm")
             );
         });
 
-        Spark.post("/pesquisa", (request, response) -> {
+        Spark.post("/usuario", (request, response) -> {
             String name = request.queryParams("name");
+            String email = request.queryParams("email");
+            String senha = request.queryParams("senha");
             if (name != null && !name.isEmpty()) {
-                Pesquisa newPesquisa = new Pesquisa(name);
-                pesquisaDAO.insert(newPesquisa);
+                Usuario newUsuario = new Usuario(1,name,email,senha);
+                usuarioDAO.insert(newUsuario);
             }
             response.redirect("/");
             return null;
@@ -59,12 +57,12 @@ public class UsuarioService {
 
         Spark.post("/pesquisa/:id/update", (request, response) -> {
             int id = Integer.parseInt(request.params(":id"));
-            Pesquisa pesquisa = pesquisaDAO.get(id);
-            if (pesquisa != null) {
-                String newName = request.queryParams("newName");
-                if (newName != null && !newName.isEmpty()) {
-                    pesquisa.setName(newName);
-                    pesquisaDAO.update(pesquisa);
+            Usuario usuario = usuarioDAO.get(id);
+            if (usuario != null) {
+                String novaSenha = request.queryParams("novasenha");
+                if (novaSenha != null && !novaSenha.isEmpty()) {
+                	usuario.setSenha(novaSenha);
+                	usuarioDAO.update(usuario);
                 }
             }
             response.redirect("/");
@@ -73,9 +71,9 @@ public class UsuarioService {
 
         Spark.get("/pesquisa/:id/delete", (request, response) -> {
             int id = Integer.parseInt(request.params(":id"));
-            Pesquisa pesquisa = pesquisaDAO.get(id);
-            if (pesquisa != null) {
-                pesquisaDAO.delete(id);
+            Usuario usuario = usuarioDAO.get(id);
+            if (usuario != null) {
+            	usuarioDAO.delete(id);
             }
             response.redirect("/");
             return null;
@@ -83,6 +81,6 @@ public class UsuarioService {
     }
 
     public static void main(String[] args) {
-        new PesquisaService();
+        new UsuarioService();
     }
 }

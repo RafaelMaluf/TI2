@@ -1,34 +1,29 @@
 package model;
 
 import java.io.Serializable;
-import java.sql.Date;
-
-
-
+import java.text.ParseException;
 
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nome;
-	private Date idade;
 	private String email;
 	private String senha;
 	
 	public Usuario() {
 		id = -1;
 		nome = "nome";
-		idade = Date.valueOf("9999-99-99");
 		email = "email";
 		senha = "senha";
 		
 	}
 	
-	public Usuario(int id, String nome, Date idade, String email, String senha) {
-		setId(id);
-		setNome(nome);
-		setIdade(idade);
-		setEmail(email);
-		setSenha(senha);
+	public Usuario(int id, String nome, String email, String senha) throws ParseException {
+        
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
 	}
 	
 	 // getters
@@ -41,9 +36,6 @@ public class Usuario implements Serializable {
 		return nome;
 	}
 	
-	public Date getIdade() {
-		return idade;
-	}
 	
 	public String getEmail() {
 		return email;
@@ -63,9 +55,6 @@ public class Usuario implements Serializable {
 		this.nome = nome;
 	}
 		
-	public void setIdade(Date idade) {
-		this.idade = idade;
-	}
 		
 	public void setEmail(String email) {
 		this.email = email;
@@ -77,7 +66,7 @@ public class Usuario implements Serializable {
 	
 	@Override
 	public String toString() {
-		return " Id: " + id + " Nome: "+ nome	+ "  Idade: " + idade +" Email: " + email +" Senha: " + senha;
+		return " Id: " + id + " Nome: "+ nome	+" Email: " + email +" Senha: " + senha;
 	}
 	
 	

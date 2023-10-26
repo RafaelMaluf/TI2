@@ -19,17 +19,19 @@ public class Texto implements Serializable {
 		
 	}
 	
-	public Texto(int id, String conteudo, String titulo) {
+	public Texto(int id, String conteudo, String titulo, boolean favorito) {
 		setId(id);
 		setConteudo(conteudo);
 		setTitulo(titulo);
 		Date data = Date.valueOf(LocalDateTime.now().toLocalDate());
 		setDataPublicacao(data);
-		setFavorito(false);
+		setFavorito(favorito);
 	}
 	
 	 // getters
 	
+
+
 	public int getId() {
 		return id;
 	}

@@ -24,15 +24,14 @@ public class TextoDAO extends DAO {
 	public boolean insert(Texto texto) {
 	    boolean status = false;
 	    try {
-	        String sql = "INSERT INTO texto (id, conteudo, titulo, dataPublicacao, favorito) "
-	                   + "VALUES (?, ?, ?, ?, ?)";
+	        String sql = "INSERT INTO texto (id, conteudo, titulo, dataPublicacao) "
+	                   + "VALUES (?, ?, ?, ?)";
 	        PreparedStatement st = conexao.prepareStatement(sql);
 	        texto.setId(getMaxId() + 1);
 	        st.setInt(1, texto.getId());  // Use setInt para o campo ID
 	        st.setString(2, texto.getConteudo());
 	        st.setString(3, texto.getTitulo());
 	        st.setDate(4, texto.getDataPublicacao());
-			st.setBoolean(5, texto.getFavorito());
 	        st.executeUpdate();
 	        st.close();
 	        status = true;
@@ -71,7 +70,7 @@ public class TextoDAO extends DAO {
 			String sql = "SELECT * FROM texto WHERE id="+id;
 			ResultSet rs = st.executeQuery(sql);	
 	        if(rs.next()){            
-	        	 texto = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"));
+	        	 texto = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"),rs.getBoolean("favorito"));
 	        }
 	        st.close();
 		} catch (Exception e) {
@@ -96,6 +95,7 @@ public class TextoDAO extends DAO {
 	}
 	
 	
+	
 	private List<Texto> get(String orderBy) {
 		List<Texto> textos= new ArrayList<Texto>();
 		
@@ -104,7 +104,8 @@ public class TextoDAO extends DAO {
 			String sql = "SELECT * FROM texto" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
 			ResultSet rs = st.executeQuery(sql);	           
 	        while(rs.next()) {	            	
-	        	Texto p = new Texto(rs.getInt("id"), rs.getString("conteudo"), rs.getString("titulo"));
+	        	Texto p = new Texto(rs.getInt("id"), rs.getString("conteudo"),
+	        						rs.getString("titulo"), rs.getBoolean("favorito"));
 	            textos.add(p);
 	        }
 	        st.close();

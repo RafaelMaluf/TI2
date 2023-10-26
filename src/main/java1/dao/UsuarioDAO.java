@@ -2,13 +2,10 @@ package dao;
 
 import model.Usuario;
 
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UsuarioDAO extends DAO {	
 	public UsuarioDAO() {
@@ -21,27 +18,6 @@ public class UsuarioDAO extends DAO {
 		close();
 	}
 	
-	public boolean insert(Usuario usuario) {
-	    boolean status = false;
-	    try {
-	        String sql = "INSERT INTO usuario (id, nome, idade, email, Senha) "
-	                   + "VALUES (?, ?, ?, ?, ?)";
-	        PreparedStatement st = conexao.prepareStatement(sql);
-	        usuario.setId(getMaxId() + 1);
-				
-	        st.setInt(1, usuario.getId());  // Use setInt para o campo ID
-	        st.setString(2, usuario.getNome());
-			st.setDate(3, usuario.getIdade());
-	        st.setString(3, usuario.getEmail());
-	        st.setString(4, usuario.getSenha());
-	        st.executeUpdate();
-	        st.close();
-	        status = true;
-	    } catch (SQLException u) {  
-	        throw new RuntimeException(u);
-	    }
-	    return status;
-	}
 	
 	public int getMaxId() {
         int maxId = -1; // Valor padrão caso não haja registros na tabela
@@ -72,8 +48,7 @@ public class UsuarioDAO extends DAO {
 			String sql = "SELECT * FROM usuario WHERE id="+id;
 			ResultSet rs = st.executeQuery(sql);	
 	        if(rs.next()){            
-	        	 usuario = new Usuario(rs.getInt("id"), rs.getString("nome"), 
-				 					   rs.getDate("idade"), rs.getString("email"),
+	        	 usuario = new Usuario(rs.getInt("id"), rs.getString("nome"), rs.getString("email"),
 									   rs.getString("senha"));
 	                				   
 	        }
@@ -85,34 +60,23 @@ public class UsuarioDAO extends DAO {
 	}
 	
 	
-	public List<Usuario> get() {
-		return get("");
-	}
-
-	
-	public List<Usuario> getOrderByID() {
-		return get("id");		
-	}
-	
-	
-	public List<Usuario> getOrderByNome() {
-		return get("nome");		
-	}
-	
-	
-	
-	private List<Usuario> get(String orderBy) {
-		List<Usuario> usuarios = new ArrayList<Usuario>();
+	public Usuario[] getUsuarios() {
+		Usuario[] usuarios = null;
 		
 		try {
 			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM usuario" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
-			ResultSet rs = st.executeQuery(sql);	           
-	        while(rs.next()) {	            	
-	        	Usuario p = new Usuario(rs.getInt("id"), rs.getString("nome"), 
-	        							rs.getDate("idade"), rs.getString("email"),
-	        							rs.getString("senha"));
-	            usuarios.add(p);
+			String sql = "SELECT * FROM usuario";
+			ResultSet rs = st.executeQuery(sql);	
+	        if(rs.next()){  
+	        	rs.next();
+	        	usuarios = new Usuario[rs.getRow()];
+	        	rs.beforeFirst();
+	        	
+	        	for(int i = 0; rs.next(); i++) {
+	        		usuarios[i] = new Usuario(rs.getInt("id"), rs.getString("nome"), rs.getString("email"),
+							   rs.getString("senha"));
+	        	}
+	                				   
 	        }
 	        st.close();
 		} catch (Exception e) {
@@ -121,18 +85,39 @@ public class UsuarioDAO extends DAO {
 		return usuarios;
 	}
 	
+	public boolean insert(Usuario usuario) {
+	    boolean status = false;
+	    try {
+	        String sql = "INSERT INTO usuario (id, nome, email, Senha) "
+	                   + "VALUES (?, ?, ?, ?)";
+	        PreparedStatement st = conexao.prepareStatement(sql);
+	        usuario.setId(getMaxId() + 1);
+				
+	        st.setInt(1, usuario.getId());  // Use setInt para o campo ID
+	        st.setString(2, usuario.getNome());
+	        st.setString(3, usuario.getEmail());
+	        st.setString(4, usuario.getSenha());
+	        st.executeUpdate();
+	        st.close();
+	        status = true;
+	    } catch (SQLException u) {  
+	        throw new RuntimeException(u);
+	    }
+	    return status;
+	}
 	
 	public boolean update(Usuario usuario) {
 		boolean status = false;
 		try {  
-			String sql = "UPDATE usuario SET nome = '" + usuario.getNome() + "', "
-					   + "idade = " + usuario.getIdade() + ", " 
-					   + "email = " + usuario.getEmail() + ","
-					   + "senha = " + usuario.getSenha() + ","
-					   + " WHERE id = " + usuario.getId();
+			String sql = "UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?";
 
-			PreparedStatement st = conexao.prepareStatement(sql);
-			st.executeUpdate();
+	        PreparedStatement st = conexao.prepareStatement(sql);
+	        st.setString(1, usuario.getNome());   // Define o valor do primeiro marcador de posição como nome
+	        st.setString(2, usuario.getEmail());  // Define o valor do segundo marcador de posição como email
+	        st.setString(3, usuario.getSenha());  // Define o valor do terceiro marcador de posição como senha
+	        st.setInt(4, usuario.getId());        // Define o valor do quarto marcador de posição como id
+
+	        st.executeUpdate();
 			st.close();
 			status = true;
 		} catch (SQLException u) {  
@@ -149,6 +134,7 @@ public class UsuarioDAO extends DAO {
 			st.executeUpdate("DELETE FROM usuario WHERE id = " + id);
 			st.close();
 			status = true;
+			
 		} catch (SQLException u) {  
 			throw new RuntimeException(u);
 		}
