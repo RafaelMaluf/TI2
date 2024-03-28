@@ -9,7 +9,6 @@ public class Texto implements Serializable {
 	private int id;
 	private String conteudo;
 	private String titulo;
-	private boolean favorito;
 	private Date dataPublicacao;
 	
 	public Texto() {
@@ -19,12 +18,11 @@ public class Texto implements Serializable {
 		
 	}
 	
-	public Texto(int id, String conteudo, String titulo, boolean favorito) {
+	public Texto(int id, String conteudo, String titulo) {
 		setId(id);
 		setConteudo(conteudo);
 		setTitulo(titulo);
 		Date data = Date.valueOf(LocalDateTime.now().toLocalDate());
-		setDataPublicacao(data);
 		setFavorito(favorito);
 	}
 	
@@ -48,9 +46,6 @@ public class Texto implements Serializable {
 		return dataPublicacao;
 	}
 	
-	public boolean getFavorito() {
-		return favorito;
-	}
 	//setters
 	
 	public void setId(int id) {
@@ -69,9 +64,6 @@ public class Texto implements Serializable {
 		this.dataPublicacao = dataPublicacao;
 	}
 
-	public void setFavorito(boolean favorito) {
-		this.favorito = favorito;
-	}
 	
 	@Override
 	public String toString() {

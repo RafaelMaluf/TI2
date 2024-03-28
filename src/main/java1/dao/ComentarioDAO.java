@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComentarioDAO extends DAO {	
 	public ComentarioDAO() {
@@ -58,29 +60,6 @@ public class ComentarioDAO extends DAO {
 		return comentario;
 	}
 	
-	public Comentario[] getComentarios() {
-		Comentario[] comentarios = null;
-		
-		try {
-			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			String sql = "SELECT * FROM comentario";
-			ResultSet rs = st.executeQuery(sql);	
-	        if(rs.next()){  
-	        	rs.next();
-	        	comentarios = new Comentario[rs.getRow()];
-	        	rs.beforeFirst();
-	        	
-	        	for(int i = 0; rs.next(); i++) {
-	        		comentarios[i] = new Comentario(rs.getInt("id"), rs.getInt("id_Texto"), rs.getString("conteudo"));
-	        	}
-	                				   
-	        }
-	        st.close();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		return comentarios;
-	}
 	
 	public boolean insert(Comentario comentario) {
 	    boolean status = false;
@@ -131,5 +110,38 @@ public class ComentarioDAO extends DAO {
 			throw new RuntimeException(u);
 		}
 		return status;
+	}
+
+		public List<Comentario> get() {
+		return get("");
+	}
+
+	
+	public List<Comentario> getOrderByID() {
+		return get("id");		
+	}
+	
+	
+	public List<Comentario> getOrderById_texto() {
+		return get("id_texto");
+	}
+	
+	
+	private List<Comentario> get(String orderBy) {
+		List<Comentario> comentarios = new ArrayList<Comentario>();
+		
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			String sql = "SELECT * FROM produto" + ((orderBy.trim().length() == 0) ? "" : (" ORDER BY " + orderBy));
+			ResultSet rs = st.executeQuery(sql);	           
+	        while(rs.next()) {	            	
+	        	Comentario p = new Comentario(rs.getInt("id"), rs.getInt("id_Texto"),  rs.getString("descricao"));
+	            comentarios.add(p);
+	        }
+	        st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return comentarios;
 	}
 }

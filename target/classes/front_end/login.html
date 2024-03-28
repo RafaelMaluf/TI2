@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Login e Cadastro</title>
+
+    <!--========== BOX ICONS ==========-->
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+
+    <!--========== CSS ==========-->
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+            width: 600px;
+            margin-bottom: 20px;
+            /* Added margin to create space between form and "Voltar" button */
+        }
+
+        .login-container,
+        .signup-container {
+            width: 48%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #F06723;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #F06723;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!--========== HEADER ==========-->
+    <header class="l-header" id="header">
+        <nav class="nav bd-container">
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <a href="index.html" class="nav__logo">
+                        <img src="assets/img/logo.png" alt="Logo" width="50" height="50">
+                    </a>
+                    <li class="nav__item"><a href="#about" class="nav__link">Celulares</a></li>
+                    <li class="nav__item"><a href="#services" class="nav__link">Computadores</a></li>
+                    <li class="nav__item"><a href="#menu" class="nav__link">Periféricos</a></li>
+                    <li class="nav__item"><a href="#contact" class="nav__link">Segurança</a></li>
+                </ul>
+            </div>
+
+            <div class="nav__toggle" id="nav-toggle">
+                <i class='bx bx-menu'></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="form-container">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form>
+                <label for="login-email">E-mail:</label>
+                <input type="text" id="login-email" name="login-email" required>
+                <label for="login-password">Senha:</label>
+                <input type="password" id="login-password" name="login-password" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+
+        <div class="signup-container">
+            <h2>Criar Conta</h2>
+            <form>
+                <label for="signup-email">E-mail:</label>
+                <input type="text" id="signup-email" name="signup-email" required>
+                <label for="signup-fullname">Nome completo:</label>
+                <input type="text" id="signup-fullname" name="signup-fullname" required>
+                <label for="signup-date">Data de Nascimento:</label>
+                <input type="text" id="signup-date" name="signup-date" placeholder="DD/MM/AAAA" required
+                    pattern="\d{2}/\d{2}/\d{4}">
+                <label for="signup-password">Senha:</label>
+                <input type="password" id="signup-password" name="signup-password" required>
+                <label for="confirmation-password">Confirmar Senha:</label>
+                <input type="password" id="confirmation-password" name="confirmation-password" required>
+                <button type="submit">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+    <!--========== SCROLL REVEAL ==========-->
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <!--========== MAIN JS ==========-->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>
